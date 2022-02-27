@@ -15,6 +15,8 @@ class PVOutputApi:
 
     def add_status(self, pgrid_w, eday_kwh, temperature, voltage):
         t = time.localtime()
+        epoch_t = int(time.mktime(t))
+        
         payload = {
             'd' : "{:04}{:02}{:02}".format(t.tm_year, t.tm_mon, t.tm_mday),
             't' : "{:02}:{:02}".format(t.tm_hour, t.tm_min),
@@ -22,6 +24,22 @@ class PVOutputApi:
             'v2' : round(pgrid_w)
         }
 
+        #  Read Meter/powerpal data every minute
+
+        end_time = epoch_t-60 # 1 minute lag
+        start_time = epoch_t-120 # 2 minute lag
+
+        r=requests.get("https://readings.powerpal.net/api/v1/meter_reading/{insert_device_id}?start=" + str(start_time) + "&end=" + str(end_time) + "&sample=1", headers={"Authorization":"{AUTH_KEY}"})
+        data = r.json()
+        if len(data) > 0:
+                p = 1/60
+                watts = (data[0]["watt_hours"])/p
+                payload['v4'] = watts
+
+        # end readigng powerpal data
+        
+        
+        
         if temperature is not None:
             payload['v5'] = temperature
 
