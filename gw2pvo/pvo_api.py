@@ -26,10 +26,10 @@ class PVOutputApi:
 
         #  Read Meter/powerpal data every minute
         
-        end_time = epoch_t-60 # 1 minute lag
-        start_time = epoch_t-120 # 2 minute lag
+        end_time = epoch_t-59 # 1 minutes lag from now
+        start_time = epoch_t-300 # 5 minute data
 
-        r=requests.get("https://readings.powerpal.net/api/v1/meter_reading/{insert_device_id}?start=" + str(start_time) + "&end=" + str(end_time) + "&sample=1", headers={"Authorization":"{AUTH_KEY}"})
+        r=requests.get("https://readings.powerpal.net/api/v1/meter_reading/{insert_device_id}?start=" + str(start_time) + "&end=" + str(end_time) + "&sample=5", headers={"Authorization":"{AUTH_KEY}"})
         data = r.json()
         if len(data) > 0:
                 p = 1/60
