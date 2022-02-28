@@ -25,7 +25,7 @@ class PVOutputApi:
         }
 
         #  Read Meter/powerpal data every minute
-
+        
         end_time = epoch_t-60 # 1 minute lag
         start_time = epoch_t-120 # 2 minute lag
 
@@ -34,11 +34,15 @@ class PVOutputApi:
         if len(data) > 0:
                 p = 1/60
                 watts = (data[0]["watt_hours"])/p
+                print ("Current import:" + str(watts))
                 payload['v4'] = watts
+                wh = data[0]["watt_hours"]
+                payload['v3'] =  wh
+                print ("Current watt hour" +  str(data[0]["watt_hours"]))
+                #payload['n'] = 1
 
         # end readigng powerpal data
-        
-        
+
         
         if temperature is not None:
             payload['v5'] = temperature
